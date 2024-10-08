@@ -67,7 +67,7 @@ const Header = () => {
             <button className="relative flex items-center">
               <RiNotification3Line className="text-2xl" />
               {notifications.length > 0 && (
-                <span className="absolute top-0 right-0 bg-red text-white  text-xs rounded-full px-1" style={{ transform: 'translate(50%, -50%)' }}>
+                <span className="absolute top-0 right-0 bg-red-600 text-white  text-xs rounded-full px-1" style={{ transform: 'translate(50%, -50%)' }}>
                   {notifications.length}
                 </span>
               )}
@@ -90,7 +90,7 @@ const Header = () => {
             <User
               as="button"
               avatarProps={{
-                isBordered: true,
+                isBordered: true, color:"success",
                 src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
                 className: "w-10 h-10", // Tamaño del avatar
               }}

@@ -15,8 +15,7 @@ async function getAccessibleModules(userId) {
       JOIN modules m ON rm.module_id = m.id
       WHERE u.id = ?
     `, [userId]);
-    return results;
-
+    return results.length > 0 ? results : []; // Manejo explícito de resultados vacíos
   } catch (error) {
     console.error('Error fetching accessible modules:', error);
     throw error;
@@ -32,7 +31,7 @@ const login = async (req, res) => {
     const user = users[0];
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.send({ message: 'Credenciales Incorrectas' });
+      return res.status(401).json({ message: 'Credenciales Incorrectas' });
     }
 
     const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: '1h' });
@@ -42,7 +41,7 @@ const login = async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
-};
+}
 
 // Ruta para obtener los módulos accesibles
 const getModules = async (req, res) => {
@@ -54,21 +53,21 @@ const getModules = async (req, res) => {
     console.error('Error fetching modules:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
-};
-
+}
+// Obtener nombre de usuario por ID
 const userNameById = async (req, res) => {
-  
   try {
     const userId = req.userId;    
-    const [data] = await db.query('SELECT username FROM users WHERE users.id = ?',[userId]);    
-    res.json(data);
-    
+    const [data] = await db.query('SELECT username FROM users WHERE users.id = ?', [userId]);
+
+    if (data.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.json(data)
   } catch (error) {
-    console.log(error);
-    
-    
+    console.error('Error fetching username:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
-};
-
-
+}
 module.exports = { login, getModules, userNameById };

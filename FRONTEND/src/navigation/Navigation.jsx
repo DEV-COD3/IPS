@@ -2,18 +2,31 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../login/Auth';
 import translation from '../languaje/translate';
-import { RiAlignJustify, RiCloseLine } from "react-icons/ri";
+import { RiAlignJustify, RiCloseLine, RiHomeLine, RiUserLine } from "react-icons/ri"; // Importa los iconos que necesites
 
 const Navigation = () => {
   const { modulesAccess } = useContext(AuthContext);
   const [showMenu, setShowMenu] = useState(false);
+
+  // Función para obtener el icono correspondiente basado en el módulo
+  const getIcon = (module) => {
+    switch (module) {
+      case 'control':
+        return <RiHomeLine />;
+      case 'users':
+        return <RiUserLine />;
+      // Agrega más casos según tus módulos y iconos
+      default:
+        return null; // O un icono predeterminado
+    }
+  };
 
   return (
     <>
       {/* Hamburger for mobile */}
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className=" lg:hidden  top-3 left-4 z-50 fixed text-4xl p-1 rounded-full sm:top-3 md:top-5"
+        className="lg:hidden top-3 left-4 z-50 fixed text-4xl p-1 rounded-full sm:top-3 md:top-5"
       >
         {showMenu ? <RiCloseLine /> : <RiAlignJustify />}
       </button>
@@ -32,12 +45,14 @@ const Navigation = () => {
             {modulesAccess.length > 0 ? (
               modulesAccess.map(item => (
                 item.module && translation[item.module] && (
+                                    
                   <li key={item.module}>
                     <Link 
                       className='flex items-center gap-4 py-3 px-5 rounded-lg hover:bg-primary transition-colors dark:hover:bg-gray-600' 
                       to={`/${item.module}`}
                     >
-                      {translation[item.module]}
+                      <span className="text-xl">{getIcon(item.module)}</span> {/* Icono */}
+                      {translation[item.module]}  {/*  // este me muestra el nombre aqui */}
                     </Link>
                   </li>
                 )
